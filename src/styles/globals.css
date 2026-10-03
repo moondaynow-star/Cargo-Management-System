@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary navy system */
+  --color-primary: #143F73;
+  --color-primary-dark: #0e2f57;
+  --color-primary-light: #1a5294;
+
+  /* Sidebar */
+  --color-sidebar: #0B1020;
+  --color-sidebar-secondary: #11192B;
+  --color-sidebar-hover: #182540;
+  --color-sidebar-active: #0D2634;
+
+  /* Application background */
+  --color-background: #F5F7FA;
+
+  /* Surface */
+  --color-surface: #FFFFFF;
+
+  /* Borders */
+  --color-border: #E1E7EF;
+  --color-border-dark: #CBD5E1;
+
+  /* Text */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-text-light: #cbd5e1;
+
+  /* Semantic colors */
+  --color-success: #00A878;
+  --color-success-light: #e6f7f2;
+  --color-danger: #dc2626;
+  --color-danger-light: #fee2e2;
+  --color-warning: #d97706;
+  --color-warning-light: #fef3c7;
+  --color-info: #2563eb;
+  --color-info-light: #dbeafe;
+
+  /* Accent */
+  --color-accent: #00A878;
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* =====================================================
+   GLOBAL RESET & BASE
+   ===================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 14px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* =====================================================
+   SCROLLBAR
+   ===================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-dark);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* =====================================================
+   FOCUS RING
+   ===================================================== */
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   ANIMATIONS
+   ===================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 500px; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.15s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.2s ease-out;
+}
+
+/* =====================================================
+   TABLE UTILITIES
+   ===================================================== */
+.table-row-hover {
+  transition: background-color 0.12s ease;
+}
+
+/* =====================================================
+   SIDEBAR SCROLLBAR (thinner & dark-themed)
+   ===================================================== */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
