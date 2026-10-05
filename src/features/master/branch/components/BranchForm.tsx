@@ -4,7 +4,7 @@ import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
 import type { Branch } from '../types';
 import type { ModalMode } from '@/types/common';
-import { generateId } from '@/utils/formatters';
+import { generateId, todayISO } from '@/utils/formatters';
 
 interface BranchFormProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface BranchFormProps {
   onSave: (branch: Branch) => void;
 }
 
-const emptyForm: Omit<Branch, 'id'> = {
+const emptyForm: Omit<Branch, 'id' | 'createdDate'> = {
   branchName: '',
   branchCode: '',
   gmName: '',
@@ -34,7 +34,7 @@ export const BranchForm: React.FC<BranchFormProps> = ({
 
   useEffect(() => {
     if (mode === 'edit' && branch) {
-      const { id: _id, ...rest } = branch;
+      const { id: _id, createdDate: _created, ...rest } = branch;
       setForm(rest);
     } else {
       setForm(emptyForm);
@@ -60,7 +60,11 @@ export const BranchForm: React.FC<BranchFormProps> = ({
 
   const handleSubmit = () => {
     if (!validate()) return;
-    onSave({ ...form, id: branch?.id || generateId() });
+    onSave({
+      ...form,
+      id: branch?.id || generateId(),
+      createdDate: branch?.createdDate || todayISO(),
+    });
     onClose();
   };
 

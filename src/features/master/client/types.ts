@@ -8,6 +8,8 @@ export interface Exporter {
   gstin: string;
   iec: string;
   lut: string;
+  /** ISO date (YYYY-MM-DD); drives the toolbar date filter. */
+  createdDate: string;
 }
 
 export interface Consignee {
@@ -18,6 +20,8 @@ export interface Consignee {
   address: string;
   country: string;
   contactNo: string;
+  /** ISO date (YYYY-MM-DD); drives the toolbar date filter. */
+  createdDate: string;
 }
 
 export type ClientTab = 'exporters' | 'consignees';

@@ -3,9 +3,10 @@ import { Input } from '@/components/common/Input';
 import { Select } from '@/components/common/Select';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
+import { USER_ROLES } from '../types';
 import type { User } from '../types';
 import type { ModalMode } from '@/types/common';
-import { generateId } from '@/utils/formatters';
+import { generateId, todayISO } from '@/utils/formatters';
 import { mockBranches } from '../../branch/mockData';
 
 interface UserFormProps {
@@ -16,12 +17,22 @@ interface UserFormProps {
   onSave: (user: User) => void;
 }
 
-const emptyForm: Omit<User, 'id'> = {
+type UserFormState = Pick<
+  User,
+  'userName' | 'email' | 'password' | 'branchCode' | 'role' | 'phone' | 'address'
+>;
+
+const emptyForm: UserFormState = {
   userName: '',
   email: '',
   password: '',
   branchCode: '',
+  role: 'BRANCH',
+  phone: '',
+  address: '',
 };
+
+const roleOptions = USER_ROLES.map((r) => ({ value: r, label: r }));
 
 export const UserForm: React.FC<UserFormProps> = ({
   isOpen,
@@ -40,8 +51,8 @@ export const UserForm: React.FC<UserFormProps> = ({
 
   useEffect(() => {
     if (mode === 'edit' && user) {
-      const { id: _id, ...rest } = user;
-      setForm(rest);
+      const { userName, email, password, branchCode, role, phone, address } = user;
+      setForm({ userName, email, password, branchCode, role, phone, address });
     } else {
       setForm(emptyForm);
     }
@@ -67,7 +78,12 @@ export const UserForm: React.FC<UserFormProps> = ({
 
   const handleSubmit = () => {
     if (!validate()) return;
-    onSave({ ...form, id: user?.id || generateId() });
+    onSave({
+      ...form,
+      id: user?.id || generateId(),
+      createdDate: user?.createdDate || todayISO(),
+      status: user?.status ?? 'Enable',
+    });
     onClose();
   };
 
@@ -88,6 +104,11 @@ export const UserForm: React.FC<UserFormProps> = ({
         <Input label="Email" required type="email" value={form.email} onChange={(e) => handleChange('email', e.target.value)} error={errors.email} placeholder="Enter email" />
         <Input label="Password" required type="password" value={form.password} onChange={(e) => handleChange('password', e.target.value)} error={errors.password} placeholder="Enter password" />
         <Select label="Branch Code" required value={form.branchCode} onChange={(e) => handleChange('branchCode', e.target.value)} error={errors.branchCode} options={branchOptions} placeholder="Select branch" />
+        <Select label="Role" value={form.role} onChange={(e) => handleChange('role', e.target.value)} options={roleOptions} placeholder="Select role" />
+        <Input label="Phone" value={form.phone} onChange={(e) => handleChange('phone', e.target.value)} placeholder="Enter phone number" />
+        <div className="md:col-span-2">
+          <Input label="Address" value={form.address} onChange={(e) => handleChange('address', e.target.value)} placeholder="Enter address" />
+        </div>
       </div>
     </Modal>
   );

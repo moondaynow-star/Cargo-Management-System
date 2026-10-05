@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Upload, Download } from 'lucide-react';
 import { PageContainer } from '@/components/layout/PageContainer';
+import { DataToolbar } from '@/components/table/DataToolbar';
 import { TablePagination } from '@/components/table/TablePagination';
-import { Button } from '@/components/common/Button';
-import { Input } from '@/components/common/Input';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
+import { ClientTabs } from '../components/ClientTabs';
 import { ExporterTable } from '../components/ExporterTable';
 import { ConsigneeTable } from '../components/ConsigneeTable';
 import { ExporterForm } from '../components/ExporterForm';
@@ -12,67 +11,101 @@ import { ConsigneeForm } from '../components/ConsigneeForm';
 import { mockExporters, mockConsignees } from '../mockData';
 import { useModal } from '@/hooks/useModal';
 import { useDebounce } from '@/hooks/useDebounce';
-import { ITEMS_PER_PAGE } from '@/utils/constants';
+import { usePagination } from '@/hooks/usePagination';
+import { inDateRange } from '@/utils/filters';
 import type { Exporter, Consignee, ClientTab } from '../types';
+
+const tabs = [
+  { key: 'exporters', label: 'Exporters' },
+  { key: 'consignees', label: 'Consignees' },
+];
+
+const uniqueCountries = (rows: { country: string }[]) =>
+  Array.from(new Set(rows.map((r) => r.country)))
+    .filter(Boolean)
+    .sort()
+    .map((c) => ({ value: c, label: c }));
 
 export const ClientPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ClientTab>('exporters');
   const [exporters, setExporters] = useState<Exporter[]>(mockExporters);
   const [consignees, setConsignees] = useState<Consignee[]>(mockConsignees);
   const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
-  
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [country, setCountry] = useState('');
+
   const exporterModal = useModal<Exporter>();
   const consigneeModal = useModal<Consignee>();
-  
   const [deleteExporter, setDeleteExporter] = useState<Exporter | null>(null);
   const [deleteConsignee, setDeleteConsignee] = useState<Consignee | null>(null);
 
   const debouncedSearch = useDebounce(search);
+  const isExporters = activeTab === 'exporters';
 
-  // Tab switching logic
+  const filteredExporters = useMemo(() => {
+    const s = debouncedSearch.trim().toLowerCase();
+    return exporters.filter((e) => {
+      if (
+        s &&
+        !(
+          e.id.toLowerCase().includes(s) ||
+          e.nickName.toLowerCase().includes(s) ||
+          e.companyName.toLowerCase().includes(s) ||
+          e.contactName.toLowerCase().includes(s) ||
+          e.gstin.toLowerCase().includes(s) ||
+          e.iec.toLowerCase().includes(s)
+        )
+      )
+        return false;
+      if (country && e.country !== country) return false;
+      return inDateRange(e.createdDate, dateFrom, dateTo);
+    });
+  }, [exporters, debouncedSearch, country, dateFrom, dateTo]);
+
+  const filteredConsignees = useMemo(() => {
+    const s = debouncedSearch.trim().toLowerCase();
+    return consignees.filter((c) => {
+      if (
+        s &&
+        !(
+          c.id.toLowerCase().includes(s) ||
+          c.nickName.toLowerCase().includes(s) ||
+          c.companyName.toLowerCase().includes(s) ||
+          c.contactName.toLowerCase().includes(s) ||
+          c.country.toLowerCase().includes(s) ||
+          c.contactNo.includes(s)
+        )
+      )
+        return false;
+      if (country && c.country !== country) return false;
+      return inDateRange(c.createdDate, dateFrom, dateTo);
+    });
+  }, [consignees, debouncedSearch, country, dateFrom, dateTo]);
+
+  const exporterPaging = usePagination(filteredExporters);
+  const consigneePaging = usePagination(filteredConsignees);
+  const paging = isExporters ? exporterPaging : consigneePaging;
+
+  const resetPages = () => {
+    exporterPaging.resetPage();
+    consigneePaging.resetPage();
+  };
+
+  const countryOptions = useMemo(
+    () => uniqueCountries(isExporters ? exporters : consignees),
+    [isExporters, exporters, consignees]
+  );
+
   const handleTabChange = (tab: ClientTab) => {
     setActiveTab(tab);
     setSearch('');
-    setPage(1);
+    setCountry('');
+    setDateFrom('');
+    setDateTo('');
+    resetPages();
   };
 
-  // Exporter data processing
-  const filteredExporters = useMemo(() => {
-    if (!debouncedSearch) return exporters;
-    const s = debouncedSearch.toLowerCase();
-    return exporters.filter(
-      (e) =>
-        e.nickName.toLowerCase().includes(s) ||
-        e.companyName.toLowerCase().includes(s) ||
-        e.gstin.toLowerCase().includes(s) ||
-        e.iec.toLowerCase().includes(s)
-    );
-  }, [exporters, debouncedSearch]);
-
-  const paginatedExporters = useMemo(() => {
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    return filteredExporters.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredExporters, page]);
-
-  // Consignee data processing
-  const filteredConsignees = useMemo(() => {
-    if (!debouncedSearch) return consignees;
-    const s = debouncedSearch.toLowerCase();
-    return consignees.filter(
-      (c) =>
-        c.nickName.toLowerCase().includes(s) ||
-        c.companyName.toLowerCase().includes(s) ||
-        c.country.toLowerCase().includes(s)
-    );
-  }, [consignees, debouncedSearch]);
-
-  const paginatedConsignees = useMemo(() => {
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    return filteredConsignees.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredConsignees, page]);
-
-  // Handlers
   const handleSaveExporter = (exporter: Exporter) => {
     if (exporterModal.mode === 'add') {
       setExporters((prev) => [exporter, ...prev]);
@@ -103,109 +136,95 @@ export const ClientPage: React.FC = () => {
     }
   };
 
-  const totalItems = activeTab === 'exporters' ? filteredExporters.length : filteredConsignees.length;
-
   return (
     <>
-      <PageContainer title="Client Master">
-        {/* Tabs */}
-        <div className="flex border-b border-border">
-          <button
-            className={`flex-1 py-3 text-sm font-semibold transition-colors focus-ring
-              ${activeTab === 'exporters' 
-                ? 'text-primary border-b-2 border-primary bg-primary/5' 
-                : 'text-text-secondary hover:text-primary hover:bg-gray-50'
-              }
-            `}
-            onClick={() => handleTabChange('exporters')}
-          >
-            Exporters
-          </button>
-          <button
-            className={`flex-1 py-3 text-sm font-semibold transition-colors focus-ring
-              ${activeTab === 'consignees' 
-                ? 'text-primary border-b-2 border-primary bg-primary/5' 
-                : 'text-text-secondary hover:text-primary hover:bg-gray-50'
-              }
-            `}
-            onClick={() => handleTabChange('consignees')}
-          >
-            Consignees
-          </button>
-        </div>
+      <PageContainer title="Client Management">
+        <ClientTabs
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={(t) => handleTabChange(t as ClientTab)}
+        />
 
-        {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 border-b border-border bg-white">
-          <p className="text-[13px] text-text-muted">
-            <span className="font-semibold text-text-primary">{totalItems}</span> {activeTab} found
-          </p>
+        <DataToolbar
+          count={paging.totalItems}
+          countLabel={activeTab}
+          search={{
+            value: search,
+            onChange: (v) => {
+              setSearch(v);
+              resetPages();
+            },
+            placeholder: 'Search by name, ID, cell...',
+          }}
+          dateRange={{
+            from: dateFrom,
+            to: dateTo,
+            onChange: (from, to) => {
+              setDateFrom(from);
+              setDateTo(to);
+              resetPages();
+            },
+          }}
+          filters={[
+            {
+              key: 'country',
+              value: country,
+              onChange: (v) => {
+                setCountry(v);
+                resetPages();
+              },
+              options: countryOptions,
+              allLabel: 'All Countries',
+            },
+          ]}
+          actions={{
+            showImport: true,
+            showExport: true,
+            add: {
+              label: isExporters ? 'Add Exporter' : 'Add Consignee',
+              onClick: isExporters ? exporterModal.openAdd : consigneeModal.openAdd,
+            },
+          }}
+        />
 
-          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-            <div className="w-full sm:w-64">
-              <Input
-                placeholder={`Search ${activeTab}...`}
-                icon={<Search size={15} />}
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              />
-            </div>
-            <Button variant="secondary" icon={<Upload size={15} />}>
-              Import
-            </Button>
-            <Button variant="secondary" icon={<Download size={15} />}>
-              Export
-            </Button>
-            <Button 
-              icon={<Plus size={15} />} 
-              onClick={activeTab === 'exporters' ? exporterModal.openAdd : consigneeModal.openAdd}
-            >
-              Add {activeTab === 'exporters' ? 'Exporter' : 'Consignee'}
-            </Button>
-          </div>
-        </div>
-
-        {/* Table Content */}
-        {activeTab === 'exporters' ? (
-          <ExporterTable 
-            data={paginatedExporters} 
-            onEdit={exporterModal.openEdit} 
-            onDelete={setDeleteExporter} 
+        {isExporters ? (
+          <ExporterTable
+            data={exporterPaging.pageItems}
+            onEdit={exporterModal.openEdit}
+            onDelete={setDeleteExporter}
           />
         ) : (
-          <ConsigneeTable 
-            data={paginatedConsignees} 
-            onEdit={consigneeModal.openEdit} 
-            onDelete={setDeleteConsignee} 
+          <ConsigneeTable
+            data={consigneePaging.pageItems}
+            onEdit={consigneeModal.openEdit}
+            onDelete={setDeleteConsignee}
           />
         )}
 
-        {/* Pagination */}
         <TablePagination
-          currentPage={page}
-          totalPages={Math.ceil(totalItems / ITEMS_PER_PAGE)}
-          totalItems={totalItems}
-          itemsPerPage={ITEMS_PER_PAGE}
-          onPageChange={setPage}
+          currentPage={paging.page}
+          totalPages={paging.totalPages}
+          totalItems={paging.totalItems}
+          itemsPerPage={paging.perPage}
+          onPageChange={paging.setPage}
         />
       </PageContainer>
 
-      {/* Forms */}
-      <ExporterForm 
-        isOpen={exporterModal.isOpen} 
-        mode={exporterModal.mode} 
-        exporter={exporterModal.selectedItem} 
-        onClose={exporterModal.close} 
-        onSave={(data) => handleSaveExporter(data as Exporter)} 
+      <ExporterForm
+        isOpen={exporterModal.isOpen}
+        mode={exporterModal.mode}
+        exporter={exporterModal.selectedItem}
+        onClose={exporterModal.close}
+        onSave={handleSaveExporter}
       />
-      <ConsigneeForm 
-        isOpen={consigneeModal.isOpen} 
-        mode={consigneeModal.mode} 
-        consignee={consigneeModal.selectedItem} 
-        onClose={consigneeModal.close} 
-        onSave={(data) => handleSaveConsignee(data as Consignee)} 
+      <ConsigneeForm
+        isOpen={consigneeModal.isOpen}
+        mode={consigneeModal.mode}
+        consignee={consigneeModal.selectedItem}
+        onClose={consigneeModal.close}
+        onSave={handleSaveConsignee}
       />
 
-      {/* Delete Dialogs */}
       <ConfirmDialog
         isOpen={!!deleteExporter}
         onClose={() => setDeleteExporter(null)}

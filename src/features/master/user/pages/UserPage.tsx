@@ -1,42 +1,69 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Upload, Download } from 'lucide-react';
 import { PageContainer } from '@/components/layout/PageContainer';
+import { DataToolbar } from '@/components/table/DataToolbar';
 import { TablePagination } from '@/components/table/TablePagination';
-import { Button } from '@/components/common/Button';
-import { Input } from '@/components/common/Input';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { UserTable } from '../components/UserTable';
 import { UserForm } from '../components/UserForm';
 import { mockUsers } from '../mockData';
+import { mockBranches } from '../../branch/mockData';
+import { USER_ROLES } from '../types';
 import { useModal } from '@/hooks/useModal';
 import { useDebounce } from '@/hooks/useDebounce';
-import { ITEMS_PER_PAGE } from '@/utils/constants';
+import { usePagination } from '@/hooks/usePagination';
+import { inDateRange } from '@/utils/filters';
 import type { User } from '../types';
+
+const branchOptions = mockBranches.map((b) => ({ value: b.branchCode, label: b.branchCode }));
+const roleOptions = USER_ROLES.map((r) => ({ value: r, label: r }));
+const statusOptions = [
+  { value: 'Enable', label: 'Enable' },
+  { value: 'Disable', label: 'Disable' },
+];
 
 export const UserPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>(mockUsers);
   const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [branch, setBranch] = useState('');
+  const [role, setRole] = useState('');
+  const [status, setStatus] = useState('');
   const modal = useModal<User>();
   const [deleteItem, setDeleteItem] = useState<User | null>(null);
 
   const debouncedSearch = useDebounce(search);
 
   const filtered = useMemo(() => {
-    if (!debouncedSearch) return users;
-    const s = debouncedSearch.toLowerCase();
-    return users.filter(
-      (u) =>
-        u.userName.toLowerCase().includes(s) ||
-        u.email.toLowerCase().includes(s) ||
-        u.branchCode.toLowerCase().includes(s)
-    );
-  }, [users, debouncedSearch]);
+    const s = debouncedSearch.trim().toLowerCase();
+    return users.filter((u) => {
+      if (
+        s &&
+        !(
+          u.userName.toLowerCase().includes(s) ||
+          u.id.toLowerCase().includes(s) ||
+          u.phone.includes(s) ||
+          u.email.toLowerCase().includes(s) ||
+          u.branchCode.toLowerCase().includes(s)
+        )
+      )
+        return false;
+      if (!inDateRange(u.createdDate, dateFrom, dateTo)) return false;
+      if (branch && u.branchCode !== branch) return false;
+      if (role && u.role !== role) return false;
+      if (status && u.status !== status) return false;
+      return true;
+    });
+  }, [users, debouncedSearch, dateFrom, dateTo, branch, role, status]);
 
-  const paginated = useMemo(() => {
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    return filtered.slice(start, start + ITEMS_PER_PAGE);
-  }, [filtered, page]);
+  const { page, setPage, resetPage, pageItems, totalItems, totalPages, perPage } =
+    usePagination(filtered);
+
+  /** Wrap a filter setter so changing a filter jumps back to page 1. */
+  const withReset = <V,>(setter: (v: V) => void) => (v: V) => {
+    setter(v);
+    resetPage();
+  };
 
   const handleSave = (user: User) => {
     if (modal.mode === 'add') {
@@ -44,6 +71,14 @@ export const UserPage: React.FC = () => {
     } else {
       setUsers((prev) => prev.map((u) => (u.id === user.id ? user : u)));
     }
+  };
+
+  const handleToggleStatus = (user: User) => {
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === user.id ? { ...u, status: u.status === 'Enable' ? 'Disable' : 'Enable' } : u
+      )
+    );
   };
 
   const handleDelete = () => {
@@ -55,41 +90,47 @@ export const UserPage: React.FC = () => {
 
   return (
     <>
-      <PageContainer title="User Master">
-        {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 border-b border-border">
-          <p className="text-[13px] text-text-muted">
-            <span className="font-semibold text-text-primary">{filtered.length}</span> users found
-          </p>
+      <PageContainer title="User Management">
+        <DataToolbar
+          count={totalItems}
+          countLabel="users"
+          search={{
+            value: search,
+            onChange: withReset(setSearch),
+            placeholder: 'Search by name, ID, phone',
+          }}
+          dateRange={{
+            from: dateFrom,
+            to: dateTo,
+            onChange: (from, to) => {
+              setDateFrom(from);
+              setDateTo(to);
+              resetPage();
+            },
+          }}
+          filters={[
+            { key: 'branch', value: branch, onChange: withReset(setBranch), options: branchOptions, allLabel: 'All Branches' },
+            { key: 'role', value: role, onChange: withReset(setRole), options: roleOptions, allLabel: 'All Roles' },
+            { key: 'status', value: status, onChange: withReset(setStatus), options: statusOptions, allLabel: 'All Status' },
+          ]}
+          actions={{
+            showExport: true,
+            add: { label: 'Add User', onClick: modal.openAdd },
+          }}
+        />
 
-          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-            <div className="w-full sm:w-64">
-              <Input
-                placeholder="Search user, email, branch..."
-                icon={<Search size={15} />}
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              />
-            </div>
-            <Button variant="secondary" icon={<Upload size={15} />}>
-              Import
-            </Button>
-            <Button variant="secondary" icon={<Download size={15} />}>
-              Export
-            </Button>
-            <Button icon={<Plus size={15} />} onClick={modal.openAdd}>
-              Add User
-            </Button>
-          </div>
-        </div>
-
-        <UserTable data={paginated} onEdit={modal.openEdit} onDelete={setDeleteItem} />
+        <UserTable
+          data={pageItems}
+          onEdit={modal.openEdit}
+          onToggleStatus={handleToggleStatus}
+          onDelete={setDeleteItem}
+        />
 
         <TablePagination
           currentPage={page}
-          totalPages={Math.ceil(filtered.length / ITEMS_PER_PAGE)}
-          totalItems={filtered.length}
-          itemsPerPage={ITEMS_PER_PAGE}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={perPage}
           onPageChange={setPage}
         />
       </PageContainer>

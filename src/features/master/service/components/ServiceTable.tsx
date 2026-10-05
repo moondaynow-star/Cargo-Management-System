@@ -12,8 +12,8 @@ interface ServiceTableProps {
 }
 
 const columns: Column<Service>[] = [
-  { key: 'service', label: 'Service Name', width: '60%' },
-  { key: 'type', label: 'Service Type', width: '40%' },
+  { key: 'service', label: 'Service', minWidth: 260 },
+  { key: 'type', label: 'Type', width: '220px' },
 ];
 
 export const ServiceTable: React.FC<ServiceTableProps> = ({
@@ -27,9 +27,10 @@ export const ServiceTable: React.FC<ServiceTableProps> = ({
       columns={columns}
       data={data}
       rowKey="id"
+      actionsWidth={100}
       loading={loading}
       emptyTitle="No services found"
-      emptyMessage="Add your first service to get started."
+      emptyMessage="Try a different search, or add a new service."
       actions={(row) => (
         <TableActions
           onEdit={() => onEdit(row)}

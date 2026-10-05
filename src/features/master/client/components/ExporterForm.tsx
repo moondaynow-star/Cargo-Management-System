@@ -4,7 +4,7 @@ import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
 import type { Exporter } from '../types';
 import type { ModalMode } from '@/types/common';
-import { generateId } from '@/utils/formatters';
+import { generateId, todayISO } from '@/utils/formatters';
 
 interface ExporterFormProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface ExporterFormProps {
   onSave: (exporter: Exporter) => void;
 }
 
-const emptyForm: Omit<Exporter, 'id'> = {
+const emptyForm: Omit<Exporter, 'id' | 'createdDate'> = {
   nickName: '',
   companyName: '',
   contactName: '',
@@ -37,7 +37,7 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
 
   useEffect(() => {
     if (mode === 'edit' && exporter) {
-      const { id: _id, ...rest } = exporter;
+      const { id: _id, createdDate: _created, ...rest } = exporter;
       setForm(rest);
     } else {
       setForm(emptyForm);
@@ -71,6 +71,7 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
     onSave({
       ...form,
       id: exporter?.id || generateId(),
+      createdDate: exporter?.createdDate || todayISO(),
     });
     onClose();
   };

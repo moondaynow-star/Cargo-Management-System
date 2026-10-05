@@ -4,7 +4,7 @@ import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
 import type { Consignee } from '../types';
 import type { ModalMode } from '@/types/common';
-import { generateId } from '@/utils/formatters';
+import { generateId, todayISO } from '@/utils/formatters';
 
 interface ConsigneeFormProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface ConsigneeFormProps {
   onSave: (consignee: Consignee) => void;
 }
 
-const emptyForm: Omit<Consignee, 'id'> = {
+const emptyForm: Omit<Consignee, 'id' | 'createdDate'> = {
   nickName: '',
   companyName: '',
   contactName: '',
@@ -35,7 +35,7 @@ export const ConsigneeForm: React.FC<ConsigneeFormProps> = ({
 
   useEffect(() => {
     if (mode === 'edit' && consignee) {
-      const { id: _id, ...rest } = consignee;
+      const { id: _id, createdDate: _created, ...rest } = consignee;
       setForm(rest);
     } else {
       setForm(emptyForm);
@@ -69,6 +69,7 @@ export const ConsigneeForm: React.FC<ConsigneeFormProps> = ({
     onSave({
       ...form,
       id: consignee?.id || generateId(),
+      createdDate: consignee?.createdDate || todayISO(),
     });
     onClose();
   };

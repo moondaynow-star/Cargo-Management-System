@@ -3,6 +3,7 @@ import type { Branch } from './types';
 export const mockBranches: Branch[] = [
   {
     id: 'BR001',
+    createdDate: '2026-01-12',
     branchName: 'Mumbai Head Office',
     branchCode: 'MUM-HO',
     gmName: 'Rajiv Kapoor',
@@ -11,6 +12,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR002',
+    createdDate: '2026-01-28',
     branchName: 'Delhi Branch',
     branchCode: 'DEL-01',
     gmName: 'Amit Singh',
@@ -19,6 +21,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR003',
+    createdDate: '2026-02-09',
     branchName: 'Chennai Branch',
     branchCode: 'CHE-01',
     gmName: 'Subramaniam R',
@@ -27,6 +30,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR004',
+    createdDate: '2026-02-23',
     branchName: 'Kolkata Branch',
     branchCode: 'KOL-01',
     gmName: 'Debashis Roy',
@@ -35,6 +39,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR005',
+    createdDate: '2026-03-05',
     branchName: 'Bangalore Branch',
     branchCode: 'BLR-01',
     gmName: 'Kiran Reddy',
@@ -43,6 +48,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR006',
+    createdDate: '2026-03-18',
     branchName: 'Hyderabad Branch',
     branchCode: 'HYD-01',
     gmName: 'Srinivas Rao',
@@ -51,6 +57,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR007',
+    createdDate: '2026-04-02',
     branchName: 'Ahmedabad Branch',
     branchCode: 'AHM-01',
     gmName: 'Nirav Patel',
@@ -59,6 +66,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR008',
+    createdDate: '2026-04-21',
     branchName: 'Pune Branch',
     branchCode: 'PUN-01',
     gmName: 'Sachin Joshi',
@@ -67,6 +75,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR009',
+    createdDate: '2026-05-07',
     branchName: 'Kochi Branch',
     branchCode: 'KOC-01',
     gmName: 'Thomas Mathew',
@@ -75,6 +84,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR010',
+    createdDate: '2026-05-26',
     branchName: 'Jaipur Branch',
     branchCode: 'JAI-01',
     gmName: 'Vikram Shekhawat',
@@ -83,6 +93,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR011',
+    createdDate: '2026-06-11',
     branchName: 'Lucknow Branch',
     branchCode: 'LKO-01',
     gmName: 'Rakesh Tiwari',
@@ -91,6 +102,7 @@ export const mockBranches: Branch[] = [
   },
   {
     id: 'BR012',
+    createdDate: '2026-07-03',
     branchName: 'Visakhapatnam Branch',
     branchCode: 'VIZ-01',
     gmName: 'Narasimha Murthy',

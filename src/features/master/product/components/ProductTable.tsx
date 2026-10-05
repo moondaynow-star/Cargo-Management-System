@@ -12,8 +12,8 @@ interface ProductTableProps {
 }
 
 const columns: Column<Product>[] = [
-  { key: 'productName', label: 'Product Name', width: '70%' },
-  { key: 'hsnCode', label: 'HSN Code', width: '30%' },
+  { key: 'productName', label: 'Product Name', minWidth: 260 },
+  { key: 'hsnCode', label: 'HSN Code', width: '220px' },
 ];
 
 export const ProductTable: React.FC<ProductTableProps> = ({
@@ -27,9 +27,10 @@ export const ProductTable: React.FC<ProductTableProps> = ({
       columns={columns}
       data={data}
       rowKey="id"
+      actionsWidth={100}
       loading={loading}
       emptyTitle="No products found"
-      emptyMessage="Add your first product to get started."
+      emptyMessage="Try a different search, or add a new product."
       actions={(row) => (
         <TableActions
           onEdit={() => onEdit(row)}

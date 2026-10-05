@@ -3,55 +3,30 @@ import React from 'react';
 interface ClientTabsProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  tabs: { key: string; label: string; count?: number }[];
+  tabs: { key: string; label: string }[];
 }
 
-export const ClientTabs: React.FC<ClientTabsProps> = ({
-  activeTab,
-  onTabChange,
-  tabs,
-}) => {
+/** Left-aligned uppercase tabs sitting directly under the navy page title bar. */
+export const ClientTabs: React.FC<ClientTabsProps> = ({ activeTab, onTabChange, tabs }) => {
   return (
-    <div className="border-b border-border">
-      <div className="flex">
-        {tabs.map((tab) => (
+    <div className="flex border-b border-border px-5 gap-1" role="tablist">
+      {tabs.map((tab) => {
+        const active = activeTab === tab.key;
+        return (
           <button
             key={tab.key}
+            role="tab"
+            aria-selected={active}
             onClick={() => onTabChange(tab.key)}
-            className={`
-              relative px-5 py-3 text-sm font-semibold uppercase tracking-wide transition-colors
-              focus-ring
-              ${
-                activeTab === tab.key
-                  ? 'text-primary'
-                  : 'text-text-muted hover:text-text-secondary'
-              }
-            `}
+            className={`relative px-4 h-11 text-[12px] font-semibold uppercase tracking-wider transition-colors focus-ring ${
+              active ? 'text-primary' : 'text-text-muted hover:text-text-secondary'
+            }`}
           >
-            <span className="flex items-center gap-2">
-              {tab.label}
-              {tab.count !== undefined && (
-                <span
-                  className={`
-                    text-[10px] px-1.5 py-0.5 rounded-full font-medium
-                    ${
-                      activeTab === tab.key
-                        ? 'bg-primary/10 text-primary'
-                        : 'bg-gray-100 text-text-muted'
-                    }
-                  `}
-                >
-                  {tab.count}
-                </span>
-              )}
-            </span>
-            {/* Active indicator */}
-            {activeTab === tab.key && (
-              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary rounded-t" />
-            )}
+            {tab.label}
+            {active && <span className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-primary" />}
           </button>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 };

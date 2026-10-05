@@ -1,0 +1,76 @@
+/* =====================================================
+   DESIGN TOKENS — single source of truth for the UI.
+   Tune measurements here, not inside components.
+   ===================================================== */
+
+@theme {
+  /* Primary navy */
+  --color-primary: #143F73;
+  --color-primary-dark: #0e2f57;
+  --color-primary-light: #1a5294;
+
+  /* Sidebar (very dark navy) */
+  --color-sidebar: #0B1020;
+  --color-sidebar-secondary: #11192B;
+  --color-sidebar-hover: #182540;
+  --color-sidebar-active: #13213A;
+
+  /* Application background / surfaces */
+  --color-background: #F3F5F8;
+  --color-surface: #FFFFFF;
+  --color-row-hover: #F6F8FB;
+
+  /* Borders (light blue-gray) */
+  --color-border: #E1E7EF;
+  --color-border-dark: #CBD5E1;
+
+  /* Text */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #7b8ba1;
+  --color-text-light: #cbd5e1;
+
+  /* Semantic */
+  --color-success: #00A878;
+  --color-success-light: #e6f7f2;
+  --color-danger: #d93a3a;
+  --color-danger-light: #fdecec;
+  --color-warning: #b7791f;
+  --color-warning-light: #fff4e0;
+  --color-info: #1d5fbf;
+  --color-info-light: #e8f0fb;
+  --color-accent: #00A878;
+
+  /* Radius — compact enterprise look */
+  --radius-control: 4px;
+  --radius-card: 6px;
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  /* Layout */
+  --header-h: 60px;
+  --sidebar-w: 240px;
+  --sidebar-w-collapsed: 68px;
+  --page-pad: 20px;
+  --page-title-h: 44px;
+
+  /* Table */
+  --thead-h: 40px;
+  --row-h: 48px;
+  --cell-px: 16px;
+
+  /* Controls (inputs, selects, buttons, date filters) */
+  --control-h: 34px;
+  --control-fs: 13px;
+
+  /* Toolbar */
+  --toolbar-gap: 12px;
+  --toolbar-px: 20px;
+  --toolbar-py: 14px;
+
+  /* Page card fills the usable viewport */
+  --page-min-h: calc(100vh - var(--header-h) - 2 * var(--page-pad));
+}

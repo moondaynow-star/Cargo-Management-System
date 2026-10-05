@@ -3,6 +3,7 @@ import type { Exporter, Consignee } from './types';
 export const mockExporters: Exporter[] = [
   {
     id: 'EXP001',
+    createdDate: '2026-07-03',
     nickName: 'TechGlobal',
     companyName: 'TechGlobal Exports Pvt Ltd',
     contactName: 'Rajesh Kumar',
@@ -14,6 +15,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP002',
+    createdDate: '2026-06-11',
     nickName: 'SilkRoute',
     companyName: 'SilkRoute Trading Corporation',
     contactName: 'Anitha Menon',
@@ -25,6 +27,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP003',
+    createdDate: '2026-05-26',
     nickName: 'Spice Valley',
     companyName: 'Spice Valley International',
     contactName: 'Mohammed Ismail',
@@ -36,6 +39,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP004',
+    createdDate: '2026-05-07',
     nickName: 'OceanCargo',
     companyName: 'Ocean Cargo Logistics Ltd',
     contactName: 'Suresh Reddy',
@@ -47,6 +51,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP005',
+    createdDate: '2026-04-21',
     nickName: 'StarExports',
     companyName: 'Star Exports & Imports',
     contactName: 'Priya Sharma',
@@ -58,6 +63,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP006',
+    createdDate: '2026-04-02',
     nickName: 'GreenLeaf',
     companyName: 'GreenLeaf Agro Exports',
     contactName: 'Vikram Patel',
@@ -69,6 +75,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP007',
+    createdDate: '2026-03-18',
     nickName: 'RoyalTextile',
     companyName: 'Royal Textile Exports',
     contactName: 'Deepa Nair',
@@ -80,6 +87,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP008',
+    createdDate: '2026-03-05',
     nickName: 'Pinnacle',
     companyName: 'Pinnacle Industries International',
     contactName: 'Arun Joshi',
@@ -91,6 +99,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP009',
+    createdDate: '2026-02-23',
     nickName: 'SunrisePharma',
     companyName: 'Sunrise Pharmaceuticals Export',
     contactName: 'Kavitha Iyer',
@@ -102,6 +111,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP010',
+    createdDate: '2026-02-09',
     nickName: 'BlueOcean',
     companyName: 'BlueOcean Marine Exports',
     contactName: 'Ramesh Babu',
@@ -113,6 +123,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP011',
+    createdDate: '2026-01-28',
     nickName: 'MetalCraft',
     companyName: 'MetalCraft Exports Corporation',
     contactName: 'Nisha Gupta',
@@ -124,6 +135,7 @@ export const mockExporters: Exporter[] = [
   },
   {
     id: 'EXP012',
+    createdDate: '2026-01-12',
     nickName: 'GoldenHarvest',
     companyName: 'Golden Harvest Foods Ltd',
     contactName: 'Sanjay Verma',
@@ -138,6 +150,7 @@ export const mockExporters: Exporter[] = [
 export const mockConsignees: Consignee[] = [
   {
     id: 'CON001',
+    createdDate: '2026-07-03',
     nickName: 'TradeWell',
     companyName: 'TradeWell LLC',
     contactName: 'Michael Johnson',
@@ -147,6 +160,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON002',
+    createdDate: '2026-06-11',
     nickName: 'EuroPartners',
     companyName: 'Euro Trading Partners GmbH',
     contactName: 'Hans Mueller',
@@ -156,6 +170,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON003',
+    createdDate: '2026-05-26',
     nickName: 'AsiaLink',
     companyName: 'AsiaLink Import Co Ltd',
     contactName: 'Wei Chen',
@@ -165,6 +180,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON004',
+    createdDate: '2026-05-07',
     nickName: 'CanadaTrade',
     companyName: 'Canada Trade Solutions Inc',
     contactName: 'Sarah Thompson',
@@ -174,6 +190,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON005',
+    createdDate: '2026-04-21',
     nickName: 'GulfLogistics',
     companyName: 'Gulf Logistics & Trading FZE',
     contactName: 'Ahmed Al Maktoum',
@@ -183,6 +200,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON006',
+    createdDate: '2026-04-02',
     nickName: 'NipponImport',
     companyName: 'Nippon Import Corporation',
     contactName: 'Takeshi Yamamoto',
@@ -192,6 +210,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON007',
+    createdDate: '2026-03-18',
     nickName: 'AussieTrade',
     companyName: 'Aussie Trade Connect Pty Ltd',
     contactName: 'James Wilson',
@@ -201,6 +220,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON008',
+    createdDate: '2026-03-05',
     nickName: 'BritishImport',
     companyName: 'British Import Holdings PLC',
     contactName: 'David Brown',
@@ -210,6 +230,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON009',
+    createdDate: '2026-02-23',
     nickName: 'SingaporeHub',
     companyName: 'Singapore Trade Hub Pte Ltd',
     contactName: 'Lim Wei Ming',
@@ -219,6 +240,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON010',
+    createdDate: '2026-02-09',
     nickName: 'BrazilConnect',
     companyName: 'Brazil Connect Importação LTDA',
     contactName: 'Carlos Silva',
@@ -228,6 +250,7 @@ export const mockConsignees: Consignee[] = [
   },
   {
     id: 'CON011',
+    createdDate: '2026-01-28',
     nickName: 'KoreaImport',
     companyName: 'Korea Import Solutions Co Ltd',
     contactName: 'Park Ji-hoon',

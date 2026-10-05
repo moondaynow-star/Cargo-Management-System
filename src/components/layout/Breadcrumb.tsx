@@ -29,7 +29,7 @@ export const Breadcrumb: React.FC = () => {
     <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[13px]">
       <Link
         to={ROUTES.DASHBOARD}
-        className="flex items-center gap-1 text-text-muted hover:text-primary transition-colors"
+        className="flex items-center gap-1.5 text-text-muted hover:text-primary transition-colors"
       >
         <Home size={15} />
         <span className="hidden sm:inline">Home</span>
@@ -41,10 +41,7 @@ export const Breadcrumb: React.FC = () => {
           {idx === crumbs.length - 1 ? (
             <span className="font-semibold text-text-primary">{crumb.label}</span>
           ) : (
-            <Link
-              to={crumb.path}
-              className="text-text-muted hover:text-primary transition-colors"
-            >
+            <Link to={crumb.path} className="text-text-muted hover:text-primary transition-colors">
               {crumb.label}
             </Link>
           )}

@@ -8,11 +8,10 @@ export const AppLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const toggleSidebar = () => {
-    // On mobile, toggle overlay
+    // On mobile, toggle overlay; on desktop, toggle collapse
     if (window.innerWidth < 1024) {
       setSidebarOpen(!sidebarOpen);
     } else {
-      // On desktop, toggle collapse
       setSidebarCollapsed(!sidebarCollapsed);
     }
   };
@@ -20,19 +19,14 @@ export const AppLayout: React.FC = () => {
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={closeSidebar}
-        isCollapsed={sidebarCollapsed}
-      />
+    <div className="flex flex-col h-screen overflow-hidden bg-background">
+      {/* Fixed full-width header */}
+      <Header onToggleSidebar={toggleSidebar} isCollapsed={sidebarCollapsed} />
 
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <Header onToggleSidebar={toggleSidebar} />
+      <div className="flex flex-1 min-h-0">
+        <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} isCollapsed={sidebarCollapsed} />
 
-        <main className="flex-1 overflow-y-auto p-5 lg:p-6">
+        <main className="flex-1 min-w-0 overflow-y-auto p-[var(--page-pad)]">
           <Outlet />
         </main>
       </div>

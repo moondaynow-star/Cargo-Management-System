@@ -67,14 +67,14 @@ export const Modal: React.FC<ModalProps> = ({
       aria-labelledby="modal-title"
     >
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* Modal */}
       <div
         ref={modalRef}
         tabIndex={-1}
         className={`
-          relative w-full ${sizeClasses[size]} bg-white rounded-lg shadow-xl
+          relative w-full ${sizeClasses[size]} bg-white rounded-card shadow-xl
           animate-slide-up outline-none
           max-h-[90vh] flex flex-col
         `}
@@ -86,7 +86,7 @@ export const Modal: React.FC<ModalProps> = ({
           </h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-gray-100 transition-colors focus-ring"
+            className="p-1 rounded-control text-text-muted hover:text-text-primary hover:bg-gray-100 transition-colors focus-ring"
             aria-label="Close modal"
           >
             <X size={18} />
@@ -100,7 +100,7 @@ export const Modal: React.FC<ModalProps> = ({
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border bg-gray-50/50 rounded-b-lg">
+          <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border bg-gray-50/50 rounded-b-card">
             {footer}
           </div>
         )}

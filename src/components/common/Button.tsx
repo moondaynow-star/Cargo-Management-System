@@ -13,13 +13,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-primary text-white hover:bg-primary-dark active:bg-primary-dark shadow-sm',
+    'bg-primary text-white hover:bg-primary-dark active:bg-primary-dark',
   secondary:
-    'bg-white text-text-primary border border-border hover:bg-gray-50 active:bg-gray-100',
+    'bg-white text-text-primary border border-border-dark hover:bg-gray-50 active:bg-gray-100',
   danger:
-    'bg-danger text-white hover:bg-red-700 active:bg-red-800 shadow-sm',
+    'bg-danger text-white hover:bg-red-700 active:bg-red-800',
   success:
-    'bg-success text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-sm',
+    'bg-success text-white hover:bg-emerald-700 active:bg-emerald-800',
   ghost:
     'bg-transparent text-text-secondary hover:bg-gray-100 active:bg-gray-200',
   icon:
@@ -27,9 +27,9 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3.5 py-1.5 text-xs h-8',
-  md: 'px-4 py-2 text-[13px] h-9',
-  lg: 'px-5 py-2.5 text-sm h-10',
+  sm: 'px-3 text-xs h-8',
+  md: 'px-4 text-[length:var(--control-fs)] h-[var(--control-h)]',
+  lg: 'px-5 text-sm h-10',
 };
 
 export const Button: React.FC<ButtonProps> = ({
@@ -46,7 +46,7 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <button
       className={`
-        inline-flex items-center justify-center gap-2 rounded-md font-medium
+        inline-flex items-center justify-center gap-2 rounded-control font-medium
         transition-all duration-150 cursor-pointer focus-ring whitespace-nowrap
         disabled:opacity-50 disabled:cursor-not-allowed
         ${variantClasses[variant]}
@@ -78,7 +78,7 @@ export const Button: React.FC<ButtonProps> = ({
           />
         </svg>
       ) : icon ? (
-        <span className="flex-shrink-0">{icon}</span>
+        <span className="flex-shrink-0 flex items-center">{icon}</span>
       ) : null}
       {children}
     </button>

@@ -1,4 +1,17 @@
+/** Today as an ISO date (YYYY-MM-DD) in local time — the format used for createdDate. */
+export function todayISO(): string {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
 export function formatDate(date: Date | string): string {
+  // Plain ISO dates are formatted by hand to avoid timezone day-shifts.
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const [y, m, d] = date.split('-');
+    return `${d}/${m}/${y}`;
+  }
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('en-IN', {
     day: '2-digit',

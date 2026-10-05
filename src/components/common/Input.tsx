@@ -38,8 +38,8 @@ export const Input: React.FC<InputProps> = ({
         <input
           id={inputId}
           className={`
-            w-full rounded-md border bg-white px-3 py-2 text-[13px] text-text-primary h-9
-            placeholder:text-text-muted/70
+            w-full rounded-control border bg-white px-3 text-[length:var(--control-fs)] text-text-primary h-[var(--control-h)]
+            placeholder:text-text-muted
             transition-colors duration-150
             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
             disabled:bg-gray-50 disabled:text-text-muted disabled:cursor-not-allowed

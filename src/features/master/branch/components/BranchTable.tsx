@@ -13,25 +13,11 @@ interface BranchTableProps {
 }
 
 const columns: Column<Branch>[] = [
-  { key: 'branchName', label: 'Branch Name', width: '20%' },
-  { key: 'branchCode', label: 'Branch', width: '10%' },
-  { key: 'gmName', label: 'GM Name', width: '16%' },
-  {
-    key: 'address',
-    label: 'Address',
-    width: '38%',
-    render: (value) => (
-      <span title={String(value || '')} className="block truncate max-w-[400px]">
-        {String(value || '')}
-      </span>
-    ),
-  },
-  {
-    key: 'cell',
-    label: 'Cell',
-    width: '12%',
-    render: (value) => formatPhone(String(value || '')),
-  },
+  { key: 'branchName', label: 'Branch Name', width: '240px' },
+  { key: 'branchCode', label: 'Branch', width: '120px' },
+  { key: 'gmName', label: 'GM Name', width: '200px' },
+  { key: 'address', label: 'Address', minWidth: 300 },
+  { key: 'cell', label: 'Cell', width: '140px', render: (value) => formatPhone(String(value || '')) },
 ];
 
 export const BranchTable: React.FC<BranchTableProps> = ({
@@ -45,9 +31,10 @@ export const BranchTable: React.FC<BranchTableProps> = ({
       columns={columns}
       data={data}
       rowKey="id"
+      actionsWidth={100}
       loading={loading}
       emptyTitle="No branches found"
-      emptyMessage="Add your first branch to get started."
+      emptyMessage="Try changing the filters, or add a new branch."
       actions={(row) => (
         <TableActions
           onEdit={() => onEdit(row)}

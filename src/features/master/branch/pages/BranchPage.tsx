@@ -1,43 +1,46 @@
 import React, { useState, useMemo } from 'react';
-import { Plus, Search, Upload, Download } from 'lucide-react';
 import { PageContainer } from '@/components/layout/PageContainer';
+import { DataToolbar } from '@/components/table/DataToolbar';
 import { TablePagination } from '@/components/table/TablePagination';
-import { Button } from '@/components/common/Button';
-import { Input } from '@/components/common/Input';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { BranchTable } from '../components/BranchTable';
 import { BranchForm } from '../components/BranchForm';
 import { mockBranches } from '../mockData';
 import { useModal } from '@/hooks/useModal';
 import { useDebounce } from '@/hooks/useDebounce';
-import { ITEMS_PER_PAGE } from '@/utils/constants';
+import { usePagination } from '@/hooks/usePagination';
+import { inDateRange } from '@/utils/filters';
 import type { Branch } from '../types';
 
 export const BranchPage: React.FC = () => {
   const [branches, setBranches] = useState<Branch[]>(mockBranches);
   const [search, setSearch] = useState('');
-  const [page, setPage] = useState(1);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const modal = useModal<Branch>();
   const [deleteItem, setDeleteItem] = useState<Branch | null>(null);
 
   const debouncedSearch = useDebounce(search);
 
   const filtered = useMemo(() => {
-    if (!debouncedSearch) return branches;
-    const s = debouncedSearch.toLowerCase();
-    return branches.filter(
-      (b) =>
-        b.branchName.toLowerCase().includes(s) ||
-        b.branchCode.toLowerCase().includes(s) ||
-        b.gmName.toLowerCase().includes(s) ||
-        b.cell.includes(s)
-    );
-  }, [branches, debouncedSearch]);
+    const s = debouncedSearch.trim().toLowerCase();
+    return branches.filter((b) => {
+      if (
+        s &&
+        !(
+          b.branchName.toLowerCase().includes(s) ||
+          b.branchCode.toLowerCase().includes(s) ||
+          b.gmName.toLowerCase().includes(s) ||
+          b.cell.includes(s)
+        )
+      )
+        return false;
+      return inDateRange(b.createdDate, dateFrom, dateTo);
+    });
+  }, [branches, debouncedSearch, dateFrom, dateTo]);
 
-  const paginated = useMemo(() => {
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    return filtered.slice(start, start + ITEMS_PER_PAGE);
-  }, [filtered, page]);
+  const { page, setPage, resetPage, pageItems, totalItems, totalPages, perPage } =
+    usePagination(filtered);
 
   const handleSave = (branch: Branch) => {
     if (modal.mode === 'add') {
@@ -56,54 +59,45 @@ export const BranchPage: React.FC = () => {
 
   return (
     <>
-      <PageContainer title="Branch Master">
-        {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 border-b border-border">
-          {/* Left: record count */}
-          <p className="text-[13px] text-text-muted">
-            <span className="font-semibold text-text-primary">{filtered.length}</span> branches found
-          </p>
-
-          {/* Right: controls */}
-          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-            <div className="w-full sm:w-64">
-              <Input
-                placeholder="Search branch name, code, GM..."
-                icon={<Search size={15} />}
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-              />
-            </div>
-            <Button variant="secondary" icon={<Upload size={15} />}>
-              Import
-            </Button>
-            <Button variant="secondary" icon={<Download size={15} />}>
-              Export
-            </Button>
-            <Button icon={<Plus size={15} />} onClick={modal.openAdd}>
-              Add Branch
-            </Button>
-          </div>
-        </div>
-
-        {/* Table */}
-        <BranchTable
-          data={paginated}
-          onEdit={modal.openEdit}
-          onDelete={setDeleteItem}
+      <PageContainer title="Branch Management">
+        <DataToolbar
+          count={totalItems}
+          countLabel="branches"
+          search={{
+            value: search,
+            onChange: (v) => {
+              setSearch(v);
+              resetPage();
+            },
+            placeholder: 'Search branch name, code, GM...',
+          }}
+          dateRange={{
+            from: dateFrom,
+            to: dateTo,
+            onChange: (from, to) => {
+              setDateFrom(from);
+              setDateTo(to);
+              resetPage();
+            },
+          }}
+          actions={{
+            showImport: true,
+            showExport: true,
+            add: { label: 'Add Branch', onClick: modal.openAdd },
+          }}
         />
 
-        {/* Pagination */}
+        <BranchTable data={pageItems} onEdit={modal.openEdit} onDelete={setDeleteItem} />
+
         <TablePagination
           currentPage={page}
-          totalPages={Math.ceil(filtered.length / ITEMS_PER_PAGE)}
-          totalItems={filtered.length}
-          itemsPerPage={ITEMS_PER_PAGE}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={perPage}
           onPageChange={setPage}
         />
       </PageContainer>
 
-      {/* Form Modal */}
       <BranchForm
         isOpen={modal.isOpen}
         mode={modal.mode}
@@ -112,7 +106,6 @@ export const BranchPage: React.FC = () => {
         onSave={handleSave}
       />
 
-      {/* Delete Confirmation */}
       <ConfirmDialog
         isOpen={!!deleteItem}
         onClose={() => setDeleteItem(null)}

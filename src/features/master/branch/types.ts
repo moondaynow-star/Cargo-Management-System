@@ -5,4 +5,6 @@ export interface Branch {
   gmName: string;
   address: string;
   cell: string;
+  /** ISO date (YYYY-MM-DD); drives the toolbar date filter. */
+  createdDate: string;
 }

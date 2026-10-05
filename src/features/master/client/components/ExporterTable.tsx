@@ -12,22 +12,13 @@ interface ExporterTableProps {
 }
 
 const columns: Column<Exporter>[] = [
-  { key: 'nickName', label: 'Nick Name', width: '10%' },
-  { key: 'companyName', label: 'Company Name', width: '20%' },
-  { key: 'contactName', label: 'Contact Name', width: '15%' },
-  {
-    key: 'address',
-    label: 'Address',
-    width: '25%',
-    render: (value) => (
-      <span title={String(value || '')} className="block truncate max-w-[250px]">
-        {String(value || '')}
-      </span>
-    ),
-  },
-  { key: 'country', label: 'Country', width: '10%' },
-  { key: 'gstin', label: 'GSTIN', width: '10%' },
-  { key: 'iec', label: 'IEC', width: '10%' },
+  { key: 'nickName', label: 'Nick Name', width: '150px' },
+  { key: 'companyName', label: 'Company Name', width: '250px' },
+  { key: 'contactName', label: 'Contact Name', width: '170px' },
+  { key: 'address', label: 'Address', minWidth: 260 },
+  { key: 'country', label: 'Country', width: '110px' },
+  { key: 'gstin', label: 'GSTIN', width: '170px' },
+  { key: 'iec', label: 'IEC', width: '130px' },
 ];
 
 export const ExporterTable: React.FC<ExporterTableProps> = ({
@@ -41,9 +32,10 @@ export const ExporterTable: React.FC<ExporterTableProps> = ({
       columns={columns}
       data={data}
       rowKey="id"
+      actionsWidth={100}
       loading={loading}
       emptyTitle="No exporters found"
-      emptyMessage="Add your first exporter to get started."
+      emptyMessage="Try changing the filters, or add a new exporter."
       actions={(row) => (
         <TableActions
           onEdit={() => onEdit(row)}
