@@ -5,6 +5,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string | null;
   required?: boolean;
   icon?: React.ReactNode;
+  rightElement?: React.ReactNode;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -12,6 +13,7 @@ export const Input: React.FC<InputProps> = ({
   error,
   required = false,
   icon,
+  rightElement,
   className = '',
   id,
   ...props
@@ -44,11 +46,17 @@ export const Input: React.FC<InputProps> = ({
             focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary
             disabled:bg-gray-50 disabled:text-text-muted disabled:cursor-not-allowed
             ${icon ? 'pl-9' : ''}
+            ${rightElement ? 'pr-10' : ''}
             ${error ? 'border-danger ring-1 ring-danger/20' : 'border-border'}
             ${className}
           `}
           {...props}
         />
+        {rightElement && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-text-muted">
+            {rightElement}
+          </div>
+        )}
       </div>
       {error && (
         <p className="mt-1 text-xs text-danger">{error}</p>

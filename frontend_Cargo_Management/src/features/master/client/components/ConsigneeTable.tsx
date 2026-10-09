@@ -13,7 +13,7 @@ interface ConsigneeTableProps {
 
 const columns: Column<Consignee>[] = [
   { key: 'nickName', label: 'Nick Name', width: '150px' },
-  { key: 'companyName', label: 'Company Name', width: '270px' },
+  { key: 'importerCompany', label: 'Importer Company', width: '270px' },
   { key: 'contactName', label: 'Contact Name', width: '180px' },
   { key: 'address', label: 'Address', minWidth: 260 },
   { key: 'country', label: 'Country', width: '160px' },

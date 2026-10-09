@@ -13,12 +13,17 @@ interface ExporterTableProps {
 
 const columns: Column<Exporter>[] = [
   { key: 'nickName', label: 'Nick Name', width: '150px' },
-  { key: 'companyName', label: 'Company Name', width: '250px' },
+  { key: 'exporterCompany', label: 'Exporter Company', width: '250px' },
   { key: 'contactName', label: 'Contact Name', width: '170px' },
   { key: 'address', label: 'Address', minWidth: 260 },
   { key: 'country', label: 'Country', width: '110px' },
   { key: 'gstin', label: 'GSTIN', width: '170px' },
   { key: 'iec', label: 'IEC', width: '130px' },
+  { key: 'lut', label: 'LUT', width: '150px' },
+  { key: 'bankName', label: 'Bank Name', width: '150px' },
+  { key: 'bankBranch', label: 'Bank Branch', width: '150px' },
+  { key: 'bankIfsc', label: 'Bank IFSC', width: '150px' },
+  { key: 'adCode', label: 'AD Code', width: '150px' },
 ];
 
 export const ExporterTable: React.FC<ExporterTableProps> = ({

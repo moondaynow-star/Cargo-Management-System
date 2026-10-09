@@ -3,8 +3,9 @@ import { Input } from '@/components/common/Input';
 import { Select } from '@/components/common/Select';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
+import { PasswordInput } from '@/components/common/PasswordInput';
 import { USER_ROLES } from '../types';
-import type { User } from '../types';
+import type { User, UserStatus } from '../types';
 import type { ModalMode } from '@/types/common';
 import { generateId, todayISO } from '@/utils/formatters';
 import { mockBranches } from '../../branch/mockData';
@@ -19,20 +20,26 @@ interface UserFormProps {
 
 type UserFormState = Pick<
   User,
-  'userName' | 'email' | 'password' | 'branchCode' | 'role' | 'phone' | 'address'
->;
+  'userName' | 'email' | 'password' | 'branchCode' | 'role' | 'phone' | 'address' | 'status'
+> & { confirmPassword?: string };
 
 const emptyForm: UserFormState = {
   userName: '',
   email: '',
   password: '',
+  confirmPassword: '',
   branchCode: '',
   role: 'BRANCH',
+  status: 'Enable',
   phone: '',
   address: '',
 };
 
 const roleOptions = USER_ROLES.map((r) => ({ value: r, label: r }));
+const statusOptions: { value: UserStatus; label: string }[] = [
+  { value: 'Enable', label: 'Enable' },
+  { value: 'Disable', label: 'Disable' },
+];
 
 export const UserForm: React.FC<UserFormProps> = ({
   isOpen,
@@ -51,8 +58,8 @@ export const UserForm: React.FC<UserFormProps> = ({
 
   useEffect(() => {
     if (mode === 'edit' && user) {
-      const { userName, email, password, branchCode, role, phone, address } = user;
-      setForm({ userName, email, password, branchCode, role, phone, address });
+      const { userName, email, password, branchCode, role, phone, address, status } = user;
+      setForm({ userName, email, password, confirmPassword: password, branchCode, role, phone, address, status });
     } else {
       setForm(emptyForm);
     }
@@ -71,6 +78,7 @@ export const UserForm: React.FC<UserFormProps> = ({
     if (!form.userName.trim()) e.userName = 'User Name is required';
     if (!form.email.trim()) e.email = 'Email is required';
     if (!form.password.trim()) e.password = 'Password is required';
+    if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match';
     if (!form.branchCode.trim()) e.branchCode = 'Branch Code is required';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -82,8 +90,8 @@ export const UserForm: React.FC<UserFormProps> = ({
       ...form,
       id: user?.id || generateId(),
       createdDate: user?.createdDate || todayISO(),
-      status: user?.status ?? 'Enable',
-    });
+      status: form.status,
+    } as User);
     onClose();
   };
 
@@ -102,9 +110,11 @@ export const UserForm: React.FC<UserFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input label="User Name" required value={form.userName} onChange={(e) => handleChange('userName', e.target.value)} error={errors.userName} placeholder="Enter user name" />
         <Input label="Email" required type="email" value={form.email} onChange={(e) => handleChange('email', e.target.value)} error={errors.email} placeholder="Enter email" />
-        <Input label="Password" required type="password" value={form.password} onChange={(e) => handleChange('password', e.target.value)} error={errors.password} placeholder="Enter password" />
+        <PasswordInput label="Password" required value={form.password} onChange={(e) => handleChange('password', e.target.value)} error={errors.password} placeholder="Enter password" />
+        <PasswordInput label="Confirm Password" required value={form.confirmPassword || ''} onChange={(e) => handleChange('confirmPassword', e.target.value)} error={errors.confirmPassword} placeholder="Confirm password" />
         <Select label="Branch Code" required value={form.branchCode} onChange={(e) => handleChange('branchCode', e.target.value)} error={errors.branchCode} options={branchOptions} placeholder="Select branch" />
         <Select label="Role" value={form.role} onChange={(e) => handleChange('role', e.target.value)} options={roleOptions} placeholder="Select role" />
+        <Select label="Status" value={form.status} onChange={(e) => handleChange('status', e.target.value)} options={statusOptions} />
         <Input label="Phone" value={form.phone} onChange={(e) => handleChange('phone', e.target.value)} placeholder="Enter phone number" />
         <div className="md:col-span-2">
           <Input label="Address" value={form.address} onChange={(e) => handleChange('address', e.target.value)} placeholder="Enter address" />

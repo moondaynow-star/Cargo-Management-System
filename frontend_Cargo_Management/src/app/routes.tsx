@@ -6,8 +6,13 @@ import { UserPage } from '@/features/master/user/pages/UserPage';
 import { ClientPage } from '@/features/master/client/pages/ClientPage';
 import { ServicePage } from '@/features/master/service/pages/ServicePage';
 import { ProductPage } from '@/features/master/product/pages/ProductPage';
+import { SignInPage } from '@/features/auth/SignInPage';
 
 export const router = createBrowserRouter([
+  {
+    path: '/sign-in',
+    element: <SignInPage />,
+  },
   {
     path: '/',
     element: <AppLayout />,

@@ -5,6 +5,7 @@ import { TablePagination } from '@/components/table/TablePagination';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { UserTable } from '../components/UserTable';
 import { UserForm } from '../components/UserForm';
+import { ResetPasswordModal } from '../components/ResetPasswordModal';
 import { mockUsers } from '../mockData';
 import { mockBranches } from '../../branch/mockData';
 import { USER_ROLES } from '../types';
@@ -31,6 +32,7 @@ export const UserPage: React.FC = () => {
   const [status, setStatus] = useState('');
   const modal = useModal<User>();
   const [deleteItem, setDeleteItem] = useState<User | null>(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
 
   const debouncedSearch = useDebounce(search);
 
@@ -88,6 +90,11 @@ export const UserPage: React.FC = () => {
     }
   };
 
+  const handleResetPassword = (userId: string, newPassword: string) => {
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, password: newPassword } : u)));
+    // Real implementation would make an API call here.
+  };
+
   return (
     <>
       <PageContainer title="User Management">
@@ -124,6 +131,7 @@ export const UserPage: React.FC = () => {
           onEdit={modal.openEdit}
           onToggleStatus={handleToggleStatus}
           onDelete={setDeleteItem}
+          onResetPassword={setResetPasswordUser}
         />
 
         <TablePagination
@@ -136,6 +144,13 @@ export const UserPage: React.FC = () => {
       </PageContainer>
 
       <UserForm isOpen={modal.isOpen} mode={modal.mode} user={modal.selectedItem} onClose={modal.close} onSave={handleSave} />
+
+      <ResetPasswordModal
+        isOpen={!!resetPasswordUser}
+        user={resetPasswordUser}
+        onClose={() => setResetPasswordUser(null)}
+        onReset={handleResetPassword}
+      />
 
       <ConfirmDialog
         isOpen={!!deleteItem}

@@ -51,7 +51,7 @@ export const ClientPage: React.FC = () => {
         !(
           e.id.toLowerCase().includes(s) ||
           e.nickName.toLowerCase().includes(s) ||
-          e.companyName.toLowerCase().includes(s) ||
+          e.exporterCompany.toLowerCase().includes(s) ||
           e.contactName.toLowerCase().includes(s) ||
           e.gstin.toLowerCase().includes(s) ||
           e.iec.toLowerCase().includes(s)
@@ -71,7 +71,7 @@ export const ClientPage: React.FC = () => {
         !(
           c.id.toLowerCase().includes(s) ||
           c.nickName.toLowerCase().includes(s) ||
-          c.companyName.toLowerCase().includes(s) ||
+          c.importerCompany.toLowerCase().includes(s) ||
           c.contactName.toLowerCase().includes(s) ||
           c.country.toLowerCase().includes(s) ||
           c.contactNo.includes(s)
@@ -230,14 +230,14 @@ export const ClientPage: React.FC = () => {
         onClose={() => setDeleteExporter(null)}
         onConfirm={handleDeleteExporter}
         title="Delete Exporter"
-        message={`Are you sure you want to delete "${deleteExporter?.companyName}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete "${deleteExporter?.exporterCompany}"? This action cannot be undone.`}
       />
       <ConfirmDialog
         isOpen={!!deleteConsignee}
         onClose={() => setDeleteConsignee(null)}
         onConfirm={handleDeleteConsignee}
         title="Delete Consignee"
-        message={`Are you sure you want to delete "${deleteConsignee?.companyName}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete "${deleteConsignee?.importerCompany}"? This action cannot be undone.`}
       />
     </>
   );

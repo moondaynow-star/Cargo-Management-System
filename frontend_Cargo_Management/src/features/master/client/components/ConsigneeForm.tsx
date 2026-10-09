@@ -2,33 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { Modal } from '@/components/common/Modal';
-import type { Exporter } from '../types';
+import type { Consignee } from '../types';
 import type { ModalMode } from '@/types/common';
 import { generateId, todayISO } from '@/utils/formatters';
 
-interface ExporterFormProps {
+interface ConsigneeFormProps {
   isOpen: boolean;
   mode: ModalMode;
-  exporter: Exporter | null;
+  consignee: Consignee | null;
   onClose: () => void;
-  onSave: (exporter: Exporter) => void;
+  onSave: (consignee: Consignee) => void;
 }
 
-const emptyForm: Omit<Exporter, 'id' | 'createdDate'> = {
+const emptyForm: Omit<Consignee, 'id' | 'createdDate'> = {
   nickName: '',
-  companyName: '',
+  importerCompany: '',
   contactName: '',
   address: '',
   country: '',
-  gstin: '',
-  iec: '',
-  lut: '',
+  contactNo: '',
 };
 
-export const ExporterForm: React.FC<ExporterFormProps> = ({
+export const ConsigneeForm: React.FC<ConsigneeFormProps> = ({
   isOpen,
   mode,
-  exporter,
+  consignee,
   onClose,
   onSave,
 }) => {
@@ -36,14 +34,14 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (mode === 'edit' && exporter) {
-      const { id: _id, createdDate: _created, ...rest } = exporter;
+    if (mode === 'edit' && consignee) {
+      const { id: _id, createdDate: _created, ...rest } = consignee;
       setForm(rest);
     } else {
       setForm(emptyForm);
     }
     setErrors({});
-  }, [mode, exporter, isOpen]);
+  }, [mode, consignee, isOpen]);
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -59,7 +57,7 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!form.nickName.trim()) newErrors.nickName = 'Nick Name is required';
-    if (!form.companyName.trim()) newErrors.companyName = 'Company Name is required';
+    if (!form.importerCompany.trim()) newErrors.importerCompany = 'Importer Company is required';
     if (!form.contactName.trim()) newErrors.contactName = 'Contact Name is required';
     if (!form.country.trim()) newErrors.country = 'Country is required';
     setErrors(newErrors);
@@ -70,8 +68,8 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
     if (!validate()) return;
     onSave({
       ...form,
-      id: exporter?.id || generateId(),
-      createdDate: exporter?.createdDate || todayISO(),
+      id: consignee?.id || generateId(),
+      createdDate: consignee?.createdDate || todayISO(),
     });
     onClose();
   };
@@ -80,7 +78,7 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === 'add' ? 'Add Exporter' : 'Edit Exporter'}
+      title={mode === 'add' ? 'Add Consignee' : 'Edit Consignee'}
       size="lg"
       footer={
         <>
@@ -99,12 +97,12 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
           placeholder="Enter nick name"
         />
         <Input
-          label="Company Name"
+          label="Importer Company"
           required
-          value={form.companyName}
-          onChange={(e) => handleChange('companyName', e.target.value)}
-          error={errors.companyName}
-          placeholder="Enter company name"
+          value={form.importerCompany}
+          onChange={(e) => handleChange('importerCompany', e.target.value)}
+          error={errors.importerCompany}
+          placeholder="Enter importer company"
         />
         <Input
           label="Contact Name"
@@ -131,22 +129,10 @@ export const ExporterForm: React.FC<ExporterFormProps> = ({
           />
         </div>
         <Input
-          label="GSTIN"
-          value={form.gstin}
-          onChange={(e) => handleChange('gstin', e.target.value)}
-          placeholder="Enter GSTIN"
-        />
-        <Input
-          label="IEC"
-          value={form.iec}
-          onChange={(e) => handleChange('iec', e.target.value)}
-          placeholder="Enter IEC code"
-        />
-        <Input
-          label="LUT"
-          value={form.lut}
-          onChange={(e) => handleChange('lut', e.target.value)}
-          placeholder="Enter LUT reference"
+          label="Contact No"
+          value={form.contactNo}
+          onChange={(e) => handleChange('contactNo', e.target.value)}
+          placeholder="Enter contact number"
         />
       </div>
     </Modal>
